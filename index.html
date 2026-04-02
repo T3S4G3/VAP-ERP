@@ -56,14 +56,54 @@
         .light .text-slate-300, .light .text-slate-400 { color: #475569; }
         
         body { -webkit-font-smoothing: antialiased; transition: background-color 0.3s, color 0.3s; }
+
+        /* Estilos para el Menú Lateral Móvil */
+        #mobile-menu {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        #mobile-menu.open {
+            transform: translateX(0);
+        }
+        #overlay {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        #overlay.show {
+            display: block;
+            opacity: 1;
+        }
     </style>
 </head>
 <body class="bg-tech-black text-slate-200 font-sans antialiased overflow-x-hidden">
+
+    <div id="overlay" class="fixed inset-0 bg-black/60 z-[55] backdrop-blur-sm"></div>
+
+    <div id="mobile-menu" class="fixed top-0 left-0 h-full w-72 bg-tech-gray z-[60] p-6 border-r border-white/10 shadow-2xl md:hidden">
+        <div class="flex justify-between items-center mb-10">
+            <span class="text-xl font-bold text-white">VAP<span class="text-tech-green"> ERP</span></span>
+            <button id="close-menu" class="text-slate-400 hover:text-white text-2xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <nav class="flex flex-col space-y-6 text-lg">
+            <a href="index.html#inicio" data-key="nav-start" class="mobile-link text-slate-300 hover:text-tech-green transition-colors">Inicio</a>
+            <a href="nosotros.html" data-key="nav-about" class="mobile-link text-slate-300 hover:text-tech-green transition-colors">¿Quiénes Somos?</a>
+            <a href="trayectoria.html" data-key="nav-history" class="mobile-link text-slate-300 hover:text-tech-green transition-colors">Trayectoria</a>
+            <a href="index.html#modulos" data-key="nav-modules" class="mobile-link text-slate-300 hover:text-tech-green transition-colors">Módulos</a>
+            <hr class="border-white/5">
+            <a href="contacto.html" data-key="nav-trial" class="mobile-link text-tech-green font-bold">Contáctenos</a>
+        </nav>
+    </div>
 
     <nav class="bg-tech-gray/90 backdrop-blur-sm shadow-xl sticky top-0 z-50 border-b border-white/5">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
                 <div class="flex items-center">
+                    <button id="open-menu" class="md:hidden text-slate-300 hover:text-tech-green mr-4 text-xl">
+                        <i class="fa-solid fa-bars-staggered"></i>
+                    </button>
                     <span class="text-2xl font-bold text-white">VAP<span class="text-tech-green"> ERP</span></span>
                 </div>
                 
@@ -264,6 +304,24 @@
             const isLight = document.documentElement.classList.toggle('light');
             themeIcon.className = isLight ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
         });
+
+        // Lógica del Menú Móvil
+        const openBtn = document.getElementById('open-menu');
+        const closeBtn = document.getElementById('close-menu');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const overlay = document.getElementById('overlay');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        function toggleMenu() {
+            mobileMenu.classList.toggle('open');
+            overlay.classList.toggle('show');
+            document.body.classList.toggle('overflow-hidden');
+        }
+
+        if(openBtn) openBtn.addEventListener('click', toggleMenu);
+        if(closeBtn) closeBtn.addEventListener('click', toggleMenu);
+        if(overlay) overlay.addEventListener('click', toggleMenu);
+        mobileLinks.forEach(link => link.addEventListener('click', toggleMenu));
     </script>
 </body>
 </html>
