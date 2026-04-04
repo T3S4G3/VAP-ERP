@@ -214,12 +214,10 @@
 
             <div class="md:w-1/2" data-aos="fade-left">
                 <div class="bg-tech-gray p-8 md:p-10 rounded-3xl border border-white/10 shadow-2xl">
-                    <form action="https://formspree.io/f/mwvwwbkq" method="POST" class="space-y-6">
-                        <input type="hidden" name="_next" value="gracias.html">
-                        
+                    <form id="contact-form" action="https://formspree.io/f/mwvwwbkq" method="POST" class="space-y-6">
                         <div>
                             <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">Nombre Completo</label>
-                            <input type="text" name="nombre" required 
+                            <input type="text" name="name" required 
                                 class="w-full bg-tech-black border border-white/10 rounded-xl px-5 py-4 focus:border-tech-green outline-none transition-all text-white placeholder-slate-600" 
                                 placeholder="Ej. Roberto Gómez">
                         </div>
@@ -231,7 +229,7 @@
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">Mensaje o Requerimiento</label>
-                            <textarea name="mensaje" rows="4" required 
+                            <textarea name="subject" rows="4" required 
                                 class="w-full bg-tech-black border border-white/10 rounded-xl px-5 py-4 focus:border-tech-green outline-none transition-all text-white placeholder-slate-600 resize-none" 
                                 placeholder="Describa brevemente lo que su empresa necesita..."></textarea>
                         </div>
@@ -304,38 +302,24 @@
 
         const langData = {
             es: {
-                "nav-start": "Inicio", 
-                "nav-about": "¿Quiénes Somos?", 
-                "nav-history": "Trayectoria",
-                "nav-modules": "Módulos", 
-                "nav-trial": "Contáctenos",
+                "nav-start": "Inicio", "nav-about": "¿Quiénes Somos?", "nav-history": "Trayectoria",
+                "nav-modules": "Módulos", "nav-trial": "Contáctenos",
                 "hero-title": "El control de tu <span class='text-tech-green font-black'>empresa</span>, evolucionado.",
                 "hero-desc": "Integra inventarios, finanzas y ventas en una plataforma inteligente y ultrarrápida. Diseñada por VAP Solutions para la era digital.",
-                "btn-demo": "Evalúe sus necesidades", 
-                "mod-title": "Soluciones Integrales", 
-                "mod-inv": "Inventario",
-                "mod-inv-p": "Control de stock en tiempo real con alertas inteligentes.", 
-                "mod-fin": "Finanzas", 
-                "mod-fin-p": "Facturación SUNAT y reportes financieros automáticos.",
-                "mod-crm": "CRM",
-                "mod-crm-p": "Gestiona tus clientes y prospectos de forma eficiente."
+                "btn-demo": "Evalúe sus necesidades", "mod-title": "Soluciones Integrales", 
+                "mod-inv": "Inventario", "mod-inv-p": "Control de stock en tiempo real con alertas inteligentes.", 
+                "mod-fin": "Finanzas", "mod-fin-p": "Facturación SUNAT y reportes financieros automáticos.",
+                "mod-crm": "CRM", "mod-crm-p": "Gestiona tus clientes y prospectos de forma eficiente."
             },
             en: {
-                "nav-start": "Home", 
-                "nav-about": "About Us", 
-                "nav-history": "History",
-                "nav-modules": "Modules", 
-                "nav-trial": "Contact Us",
+                "nav-start": "Home", "nav-about": "About Us", "nav-history": "History",
+                "nav-modules": "Modules", "nav-trial": "Contact Us",
                 "hero-title": "Your <span class='text-tech-green font-black'>business</span> control, evolved.",
                 "hero-desc": "Integrate inventory, finance and sales in a smart, ultra-fast platform. Designed by VAP Solutions for the digital age.",
-                "btn-demo": "Evaluate your needs", 
-                "mod-title": "Complete Solutions", 
-                "mod-inv": "Inventory",
-                "mod-inv-p": "Real-time stock control with smart alerts.", 
-                "mod-fin": "Finance", 
-                "mod-fin-p": "SUNAT billing and automatic financial reports.",
-                "mod-crm": "CRM",
-                "mod-crm-p": "Manage your clients and prospects efficiently."
+                "btn-demo": "Evaluate your needs", "mod-title": "Complete Solutions", 
+                "mod-inv": "Inventory", "mod-inv-p": "Real-time stock control with smart alerts.", 
+                "mod-fin": "Finance", "mod-fin-p": "SUNAT billing and automatic financial reports.",
+                "mod-crm": "CRM", "mod-crm-p": "Manage your clients and prospects efficiently."
             }
         };
 
@@ -378,6 +362,39 @@
         if(closeBtn) closeBtn.addEventListener('click', toggleMenu);
         if(overlay) overlay.addEventListener('click', toggleMenu);
         mobileLinks.forEach(link => link.addEventListener('click', toggleMenu));
+
+        // Integración Formspree (Vanilla JS / Ajax)
+        const contactForm = document.getElementById('contact-form');
+        if (contactForm) {
+            contactForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const data = new FormData(contactForm);
+                const button = contactForm.querySelector('button[type="submit"]');
+                const originalText = button.innerHTML;
+                
+                button.innerHTML = 'Enviando...';
+                button.disabled = true;
+
+                try {
+                    const response = await fetch(contactForm.action, {
+                        method: contactForm.method,
+                        body: data,
+                        headers: { 'Accept': 'application/json' }
+                    });
+                    if (response.ok) {
+                        window.location.href = 'gracias.html';
+                    } else {
+                        alert("Error al enviar. Verifique su conexión.");
+                        button.innerHTML = originalText;
+                        button.disabled = false;
+                    }
+                } catch (error) {
+                    alert("Error de red.");
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                }
+            });
+        }
     </script>
 </body>
 </html>
